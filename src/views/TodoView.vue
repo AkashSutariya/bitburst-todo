@@ -50,13 +50,13 @@
               class="absolute top-0 right-10 z-10 pr-1"
             >
               <Button
-                class="w-full text-left"
+                class="w-full text-left rounded-b-none -ml-px -mt-px"
                 size="small"
                 label="Delete"
                 @click.stop="todoStore.deleteTodo(index)"
               />
               <Button
-                class="w-full text-left"
+                class="w-full text-left rounded-t-none -ml-px -mt-px"
                 size="small"
                 label="Move to Backlog"
                 @click.stop="todoStore.moveTodoToBacklogs(index)"
