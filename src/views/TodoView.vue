@@ -40,7 +40,7 @@
             class="relative h-10 w-10 rounded-full flex items-center justify-center hover:bg-chrome"
             :class="[index === state.todoEllipsisMenuIndex ? 'bg-chrome' : '']"
             v-click-outside="handleEllipsisMenuClickOutside"
-            @click="setTodoEllipsisMenuIndex(index)"
+            @click.stop="setTodoEllipsisMenuIndex(index)"
           >
             <IconEllipsis
               :class="[index === state.todoEllipsisMenuIndex ? 'fill-black' : 'fill-dark-gray']"
