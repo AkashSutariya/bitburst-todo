@@ -8,16 +8,15 @@
             <IconArrow class="duration-300" :class="{ 'rotate-90': state.showDoneTodos }" />
           </a>
           <span class="ml-3.5 text-light-gray text-15px"
-            >{{ todoStore.doneTodos.length }} Done</span
+            >{{ tasksStore.getDoneTodos.length }} Done</span
           >
         </div>
         <ListTransition v-show="state.showDoneTodos">
           <TodoItem
             class="mt-3"
-            v-for="(todo, index) in todoStore.doneTodos"
+            v-for="todo in tasksStore.getDoneTodos"
             :item="todo"
-            checked
-            @on-unchecked="todoStore.moveDoneTodoToTodos(index)"
+            @on-task-undone="tasksStore.markTaskAsUndoneById(todo.id)"
           />
         </ListTransition>
       </div>
@@ -26,43 +25,44 @@
       <ListTransition class="px-4 md:px-0">
         <div
           class="flex mt-3 items-center justify-between"
-          v-for="(todo, index) in todoStore.todos"
-          :key="todo.timestamp"
+          v-for="todo in tasksStore.getTodos"
+          :key="todo.id"
         >
           <TodoItem
             :item="todo"
-            @on-checked="todoStore.moveTodoToDoneTodos(index)"
-            @on-remove="handleEllipsisMenuClickOutside"
+            @on-task-done="tasksStore.markTaskAsDoneById(todo.id)"
           />
           <!-- Start: Todo Action Section -->
-          <a
-            href="javascript:void(0)"
-            class="relative h-10 w-10 rounded-full flex items-center justify-center hover:bg-chrome"
-            :class="[index === state.todoEllipsisMenuIndex ? 'bg-chrome' : '']"
-            v-click-outside="handleEllipsisMenuClickOutside"
-            @click.stop="setTodoEllipsisMenuIndex(index)"
-          >
+          <div class="relative">
+            <a
+              href="javascript:void(0)"
+              class="h-10 w-10 rounded-full flex items-center justify-center hover:bg-chrome"
+              :class="{ 'bg-chrome': todo.id === state.todoEllipsisMenuId }"
+              v-click-outside="handleEllipsisMenuClickOutside"
+              @click.stop="setTodoEllipsisMenuId(todo.id)"
+            >
             <IconEllipsis
-              :class="[index === state.todoEllipsisMenuIndex ? 'fill-black' : 'fill-dark-gray']"
+              :class="[todo.id === state.todoEllipsisMenuId ? 'fill-black' : 'fill-dark-gray']"
             />
+            </a>
             <div
-              v-show="index === state.todoEllipsisMenuIndex"
+              v-show="todo.id === state.todoEllipsisMenuId"
               class="absolute top-0 right-10 z-10 pr-1"
             >
               <Button
                 class="w-full text-left rounded-b-none -ml-px -mt-px"
                 size="small"
                 label="Delete"
-                @click.stop="todoStore.deleteTodo(index)"
+                @click="tasksStore.deleteTaskById(todo.id)"
               />
               <Button
                 class="w-full text-left rounded-t-none -ml-px -mt-px"
                 size="small"
                 label="Move to Backlog"
-                @click.stop="todoStore.moveTodoToBacklogs(index)"
+                @click="tasksStore.setTaskAsBacklogById(todo.id)"
               />
             </div>
-          </a>
+          </div>
           <!-- End: Todo Action Section -->
         </div>
       </ListTransition>
@@ -70,11 +70,11 @@
     </div>
     <!-- Start: New Todo Section -->
     <div class="flex justify-between pb-12 px-4 md:px-0">
-      <InputText class="w-full" v-model.lazy.trim="state.todoLabel" />
+      <InputText class="w-full" v-model.lazy.trim="state.newTodo.label" />
       <Button
-        class="ml-4 whitespace-nowrap"
+        class="ml-4"
         label="Add Item"
-        :disabled="!state.todoLabel"
+        :disabled="!state.newTodo.label"
         @click="addTodo()"
       />
     </div>
@@ -86,38 +86,52 @@
 import { reactive } from 'vue'
 
 // Components
-import TodoItem from '@/components/ui/TodoItem.vue'
-import InputText from '@/components/ui/InputText.vue'
-import Button from '@/components/ui/Button.vue'
-import ListTransition from '@/components/ui/ListTransition.vue'
+import TodoItem from '@/components/TodoItem.vue'
+import InputText from '@/components/ui/inputs/InputText.vue'
+import Button from '@/components/ui/actions/Button.vue'
+import ListTransition from '@/components/ui/transitions/ListTransition.vue'
 
 // Icons
 import IconArrow from '@/components/icons/IconArrow.vue'
 import IconEllipsis from '@/components/icons/IconEllipsis.vue'
 
+import type { task, taskInput } from '@/types/index'
+
+import { TASKTYPE } from '@/constants/index'
+
 // Store
-import { useTodosStore } from '@/stores/todos'
-const todoStore = useTodosStore()
+import { useTasksStore } from '@/stores/tasks'
+const tasksStore = useTasksStore()
 
 // State of Component
 const state = reactive({
-  todoEllipsisMenuIndex: -1,
-  todoLabel: '',
+  todoEllipsisMenuId: 0,
+  newTodo: {
+    label: '',
+    type: TASKTYPE.TODO,
+  } as taskInput,
   showDoneTodos: false
 })
 
 // Methods
-function setTodoEllipsisMenuIndex(index: number) {
-  state.todoEllipsisMenuIndex = index
+function setTodoEllipsisMenuId(id: number) {
+  state.todoEllipsisMenuId = id;
 }
 
 function handleEllipsisMenuClickOutside() {
-  state.todoEllipsisMenuIndex = -1
+  state.todoEllipsisMenuId = 0;
 }
 
 function addTodo() {
-  todoStore.addTodo(state.todoLabel)
-  state.todoLabel = ''
+  tasksStore.addTask(state.newTodo as task);
+  resetNewTodo();
+}
+
+function resetNewTodo() {
+  state.newTodo = {
+    label: '',
+    type: TASKTYPE.TODO
+  };
 }
 
 function toggleDoneTodos() {

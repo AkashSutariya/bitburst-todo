@@ -41,6 +41,12 @@ module.exports = {
           },
         },
       },
+      content: {
+        checkmark: 'url("/icons/checkmark.svg")',
+      },
+      boxShadow: {
+        'inputtext': '0px 4px 4px rgba(0, 0, 0, 0.25)',
+      },
     },
   },
   plugins: [],

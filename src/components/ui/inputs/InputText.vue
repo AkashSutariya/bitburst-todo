@@ -1,6 +1,9 @@
 <template>
   <input
-    class="py-3 px-3.75 border border-light-gray rounded text-15px"
+    class="py-3 px-3.75 border border-light-gray rounded text-15px focus:outline-none focus:border-blue focus:shadow-none"
+    :class="{
+      'shadow-inputtext': modelValue,
+    }"
     type="text"
     :placeholder="placeholder"
     :value="modelValue"
