@@ -12,7 +12,7 @@ import { reactive } from 'vue'
 import { RouterView } from 'vue-router'
 
 // Components
-import TabMenu from '@/components/TabMenu.vue'
+import TabMenu from '@/components/layouts/TabMenu.vue'
 
 // Types
 import type { menu } from '@/types'

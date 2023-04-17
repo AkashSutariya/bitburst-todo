@@ -1,5 +1,9 @@
 import { defineStore } from 'pinia'
+
+// Types
 import type { task } from '@/types/index'
+
+// Constants
 import { TASKTYPE } from '@/constants/index'
 
 export const useTasksStore = defineStore('tasks', {

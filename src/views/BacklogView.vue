@@ -25,8 +25,9 @@
         <div
           class="flex mb-4 items-center justify-between"
           v-for="backlog in backlogs"
+          :key="backlog.id"
         >
-          <TodoItem 
+          <TaskItem 
             :item="backlog"
             @on-task-done="tasksStore.markTaskAsDoneById(backlog.id)"
           />
@@ -52,7 +53,7 @@
 import { reactive, computed } from 'vue'
 
 // Components
-import TodoItem from '@/components/TodoItem.vue'
+import TaskItem from '@/components/ui/task/Item.vue'
 import InputText from '@/components/ui/inputs/InputText.vue'
 import Button from '@/components/ui/actions/Button.vue'
 import ListTransition from '@/components/ui/transitions/ListTransition.vue'
@@ -81,7 +82,7 @@ const state = reactive({
 })
 
 const backlogs = computed(() => {
-
+  // Filter backlogs based on search query
   const regex = new RegExp(state.labelQ, 'i');
   const backlogs = tasksStore.getBacklogs.filter((backlog) => {
     if (!state.labelQ || backlog.label.search(regex) !== -1) {
@@ -90,6 +91,7 @@ const backlogs = computed(() => {
     return false
   });
 
+  // Sort backlogs by type & field
   if (state.sort) {
     backlogs.sort(sortArrayOfObject<task, keyof task>(state.sort) as ((a: task, b: task) => number));
   }

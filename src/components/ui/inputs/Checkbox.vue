@@ -20,6 +20,7 @@ defineProps({
 // Emits
 const emits = defineEmits(['update:modelValue'])
 
+// Methods
 function handleChange(event: Event) {
   emits('update:modelValue', (event.target as HTMLInputElement).checked)
 }

@@ -26,6 +26,7 @@ defineProps({
 // Emits
 const emits = defineEmits(['update:modelValue'])
 
+// Methods
 function handleInput(event: Event) {
   emits('update:modelValue', (event.target as HTMLInputElement).value)
 }

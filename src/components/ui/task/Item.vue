@@ -1,9 +1,9 @@
 <template>
-  <div class="flex">
+  <div class="flex gap-2">
     <Checkbox
       v-model="state.isDone"
     />
-    <div class="ml-2">
+    <div>
       <p class="text-15px" :class="[state.isDone ? 'text-dark-gray line-through' : 'text-black']">
         {{ item.label }}
       </p>
@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 // Core Vue
-import { onBeforeUnmount, reactive, watch } from 'vue'
+import { reactive, watch } from 'vue'
 
 
 // Components
@@ -28,7 +28,7 @@ import type { PropType } from 'vue'
 
 
 // Emits
-const emits = defineEmits(['onTaskDone', 'onTaskUndone', 'onRemove'])
+const emits = defineEmits(['onTaskDone', 'onTaskUndone'])
 
 // Props
 const props = defineProps({
@@ -38,10 +38,12 @@ const props = defineProps({
   },
 })
 
+// State of Component
 const state = reactive({
   isDone: props.item.isDone,
 });
 
+// Watchers
 watch(
   () => state.isDone,
   (value) => {
@@ -51,9 +53,5 @@ watch(
       emits('onTaskUndone')
     }
   }
-)
-
-onBeforeUnmount(() => {
-  emits('onRemove')
-})
+);
 </script>

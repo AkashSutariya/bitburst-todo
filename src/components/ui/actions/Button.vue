@@ -6,7 +6,7 @@
         'py-3 px-3.75 border-dark-blue bg-blue hover:border-blue hover:bg-light-blue disabled:border-gray disabled:bg-light-gray text-white text-15px'
         : '',
         size === 'small' ?
-        'text-blue py-2 px-3 text-13px border-light-gray hover:text-dark-blue hover:border-dark-gray'
+        'py-2 px-3 border-light-gray hover:text-dark-blue hover:border-dark-gray text-blue text-13px'
         : '',
       ]"
     :disabled="disabled"

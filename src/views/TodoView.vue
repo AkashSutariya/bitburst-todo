@@ -12,9 +12,10 @@
           >
         </div>
         <ListTransition v-show="state.showDoneTodos">
-          <TodoItem
+          <TaskItem
             class="mt-3"
             v-for="todo in tasksStore.getDoneTodos"
+            :key="todo.id"
             :item="todo"
             @on-task-undone="tasksStore.markTaskAsUndoneById(todo.id)"
           />
@@ -22,13 +23,13 @@
       </div>
       <!-- End: Done Todo Section -->
       <!-- Start: Todo Section -->
-      <ListTransition class="px-4 md:px-0">
+      <ListTransition class="mt-3 px-4 md:px-0">
         <div
-          class="flex mt-3 items-center justify-between"
+          class="flex mb-3 items-center justify-between"
           v-for="todo in tasksStore.getTodos"
           :key="todo.id"
         >
-          <TodoItem
+          <TaskItem
             :item="todo"
             @on-task-done="tasksStore.markTaskAsDoneById(todo.id)"
           />
@@ -47,7 +48,7 @@
             </a>
             <div
               v-show="todo.id === state.todoEllipsisMenuId"
-              class="absolute top-0 right-10 z-10 pr-1"
+              class="absolute top-0 right-10 z-10 mr-1"
             >
               <Button
                 class="w-full text-left rounded-b-none -ml-px -mt-px"
@@ -86,7 +87,7 @@
 import { reactive } from 'vue'
 
 // Components
-import TodoItem from '@/components/TodoItem.vue'
+import TaskItem from '@/components/ui/task/Item.vue'
 import InputText from '@/components/ui/inputs/InputText.vue'
 import Button from '@/components/ui/actions/Button.vue'
 import ListTransition from '@/components/ui/transitions/ListTransition.vue'
@@ -95,8 +96,10 @@ import ListTransition from '@/components/ui/transitions/ListTransition.vue'
 import IconArrow from '@/components/icons/IconArrow.vue'
 import IconEllipsis from '@/components/icons/IconEllipsis.vue'
 
+// Types
 import type { task, taskInput } from '@/types/index'
 
+// Constants
 import { TASKTYPE } from '@/constants/index'
 
 // Store
@@ -114,12 +117,13 @@ const state = reactive({
 })
 
 // Methods
+
 function setTodoEllipsisMenuId(id: number) {
   state.todoEllipsisMenuId = id;
 }
 
 function handleEllipsisMenuClickOutside() {
-  state.todoEllipsisMenuId = 0;
+  setTodoEllipsisMenuId(0);
 }
 
 function addTodo() {

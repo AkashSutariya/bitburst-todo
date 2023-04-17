@@ -14,13 +14,12 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from 'vue'
-
 // Package Composables
 import { useRoute } from 'vue-router'
 
 // Types
 import type { menu } from '@/types'
+import type { PropType } from 'vue'
 
 const route = useRoute()
 
